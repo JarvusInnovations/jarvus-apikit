@@ -37,8 +37,28 @@ Ext.define('Jarvus.util.AbstractAPI', {
 
     //@private
     buildUrl: function(path) {
-        var host = this.getHost();
-        return host ? (this.getUseSSL() ? 'https://' : 'http://')+host+path : path;
+        var me = this,
+            host = me.getHost(),
+            parser;
+
+        if (host) {
+            parser = document.createElement('a');
+            parser.href = path;
+
+            // Only rewrite relative URLs
+            if (parser.host !== location.host) {
+                parser.host = host;
+
+                // Only upgrade to SSL, do not downgrade
+                if (parser.protocol !== 'https:' && me.getUseSSL()) {
+                    parser.protcol = 'https:';
+                }
+            }
+
+            return parser.href;
+        }
+
+        return path;
     },
 
     //@private
