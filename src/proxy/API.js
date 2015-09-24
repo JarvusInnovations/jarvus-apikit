@@ -23,9 +23,9 @@ Ext.define('Jarvus.proxy.API', {
         writeFilterParams: true,
 
         headers: null,
-        
+
         noCache: false,
-        
+
         directionParam: false,
         filterParam: false,
         groupDirectionParam: false,
@@ -56,7 +56,7 @@ Ext.define('Jarvus.proxy.API', {
                 });
             };
         }
-    }, 
+    },
 
     /**
      * Convert "connection" class into constructor reference
@@ -180,7 +180,7 @@ Ext.define('Jarvus.proxy.API', {
 
     destroy: function() {
         this.lastRequest = null;
-        
+
         this.callParent();
     }
 });
