@@ -3,7 +3,7 @@
 /**
  * @abstract
  * An abstract class for singletons that facilitates communication with backend services
- * 
+ *
  * TODO:
  * - add events for all lifecycle events: beforerequest, request, beforexception, exception, unauthorized
  * - does the touch version use Ext.Ajax or parent.request?
@@ -11,6 +11,8 @@
  */
 Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
+
+    qualifiedUrlRe: /^(https?:)?\/\//,
 
     config: {
         /**
@@ -46,6 +48,10 @@ Ext.define('Jarvus.util.AbstractAPI', {
         var me = this,
             host = me.getHost(),
             pathPrefix = me.getPathPrefix();
+
+        if (me.qualifiedUrlRe.test(path)) {
+            return path;
+        }
 
         if (pathPrefix) {
             path = pathPrefix + path;
