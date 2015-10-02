@@ -24,6 +24,8 @@ Ext.define('Jarvus.proxy.API', {
 
         headers: null,
 
+        withCredentials: true,
+
         noCache: false,
 
         directionParam: false,
@@ -132,6 +134,7 @@ Ext.define('Jarvus.proxy.API', {
         request.setMethod(me.getMethod(request));
         request.setHeaders(me.getHeaders(request));
         request.setTimeout(me.getTimeout(request));
+        request.setWithCredentials(me.getWithCredentials());
 
         return request;
     },
