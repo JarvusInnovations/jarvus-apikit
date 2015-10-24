@@ -36,7 +36,12 @@ Ext.define('Jarvus.proxy.API', {
         limitParam: false,
         pageParam: false,
         sortParam: false,
-        startParam: false
+        startParam: false,
+
+        writer: {
+            type: 'json',
+            allowSingle: false
+        }
     },
 
     /**
