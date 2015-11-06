@@ -13,6 +13,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
 
     qualifiedUrlRe: /^(https?:)?\/\//,
+    jsonMimeTypeRe: /^application\/([^;\s]+\+)?json(;.+)?$/,
 
     config: {
         /**
@@ -79,7 +80,8 @@ Ext.define('Jarvus.util.AbstractAPI', {
      * @inheritdoc
      */
     request: function(options) {
-        var me = this;
+        var me = this,
+            jsonMimeTypeRe = me.jsonMimeTypeRe;
 
         return me.callParent([Ext.applyIf({
             url: me.buildUrl(options.url),
@@ -88,7 +90,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
             timeout: options.timeout || 30000,
             success: function(response) {
 
-                if (options.autoDecode !== false && response.getResponseHeader('Content-Type') == 'application/json') {
+                if (options.autoDecode !== false && jsonMimeTypeRe.test(response.getResponseHeader('Content-Type'))) {
                     response.data = Ext.decode(response.responseText, true);
                 }
 
@@ -98,7 +100,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
             },
             failure: function(response) {
 
-                if (options.autoDecode !== false && response.getResponseHeader('Content-Type') == 'application/json') {
+                if (options.autoDecode !== false && jsonMimeTypeRe.test(response.getResponseHeader('Content-Type'))) {
                     response.data = Ext.decode(response.responseText, true);
                 }
 
