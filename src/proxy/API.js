@@ -7,7 +7,8 @@ Ext.define('Jarvus.proxy.API', {
     extend: 'Ext.data.proxy.Server',
     alias: 'proxy.api',
     requires: [
-        'Jarvus.util.API'
+        'Jarvus.util.API',
+        'Jarvus.writer.API'
     ],
 
     config: {
@@ -38,10 +39,7 @@ Ext.define('Jarvus.proxy.API', {
         sortParam: false,
         startParam: false,
 
-        writer: {
-            type: 'json',
-            allowSingle: false
-        }
+        writer: 'api'
     },
 
     /**
