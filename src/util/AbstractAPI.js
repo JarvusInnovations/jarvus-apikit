@@ -107,12 +107,18 @@ Ext.define('Jarvus.util.AbstractAPI', {
                 if (response.aborted === true) {
                     Ext.callback(options.abort, options.scope, [response]);
                 } else if (response.status == 401 || response.statusText.indexOf('Unauthorized') !== -1) {
-
+                    
                     /*
                     We seem to always get the same session id, so we can't automatically try again once the user logs in
                     var oldSessionID = Ext.util.Cookies.get('s');
                      */
 
+                    // Send user to callback if login attempt has failed
+                    if (options.url == '/login') {
+                        Ext.callback(options.success, options.scope, [response]);
+                        return;
+                    }
+                    
                     Ext.override(Ext.Msg, {
                         hide: function () {
                             var me = this,
