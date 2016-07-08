@@ -113,49 +113,6 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     var oldSessionID = Ext.util.Cookies.get('s');
                      */
 
-                    // Send user to callback if login attempt has failed
-                    if (options.url == '/login') {
-                        Ext.callback(options.success, options.scope, [response]);
-                        return;
-                    }
-                    
-                    Ext.override(Ext.Msg, {
-                        hide: function () {
-                            var me = this,
-                                hideManually = me.cfg ? me.cfg.hideManually : false;
-
-                            if (!hideManually) {
-                                me.callParent(arguments);
-                            }
-                        }
-                    });
-
-                    var msg = Ext.Msg.show({
-                        hideManually: true,
-                        title: 'Login Required',
-                        msg: "You've either logged out or your has session expired. Please login and try again.",
-                        buttonText: {
-                            'yes': 'Login',
-                            'no': 'Try Again',
-                            'cancel': 'Cancel'
-                        },
-                        scope: msg,
-                        fn: function (btn) {
-                            if (btn === 'yes') {
-                                // login
-                                var loginWindow = window.open(me.buildUrl('/login'), 'emergence-login');
-                                loginWindow.focus();
-                                return;
-                            } else if (btn === 'no') {
-                                // try again
-                                me.request(options);
-                            }
-
-                            msg.cfg.hideManually = false;
-                            msg.hide();
-                        }
-                    });
-
                     /*
                     if (oldSessionID !== null) {
                         var cookieCheckInterval = window.setInterval(function() {
@@ -169,6 +126,9 @@ Ext.define('Jarvus.util.AbstractAPI', {
                         }, 100);
                     }
                     */
+                    
+                    Ext.callback(options.unauthenticated, options.scope, [response]);
+
                 } else if(response.status == 0) {
                     Ext.Msg.confirm('An error occurred', 'There was an error trying to reach the server. Do you want to try again?', function (btn) {
                         if (btn === 'yes') {
