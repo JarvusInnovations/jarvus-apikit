@@ -129,7 +129,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     
                     Ext.callback(options.unauthenticated, options.scope, [response]);
 
-                } else if(response.status == 0) {
+                } else if(response.status === 0) {
                     Ext.Msg.confirm('An error occurred', 'There was an error trying to reach the server. Do you want to try again?', function (btn) {
                         if (btn === 'yes') {
                             me.request(options);
