@@ -133,6 +133,8 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     Ext.Msg.confirm('An error occurred', 'There was an error trying to reach the server. Do you want to try again?', function (btn) {
                         if (btn === 'yes') {
                             me.request(options);
+                        } else {
+                            Ext.callback(options.failure, options.scope, [response]);
                         }
                     });
                 } else {
