@@ -145,7 +145,7 @@ Ext.define('Jarvus.proxy.API', {
     doRequest: function(operation) {
         var me = this,
             writer = me.getWriter(),
-            request = me.buildRequest(operation);;
+            request = me.buildRequest(operation);
 
         if (writer && operation.allowWrite()) {
             request = writer.write(request);
