@@ -166,7 +166,6 @@ Ext.define('Jarvus.proxy.API', {
         var me = this;
 
         request.setRawRequest(me.getConnection().request(Ext.applyIf({
-            autoDecode: null,
             failureStatusCodes: [404] // TODO: verify this results in the proper failure method being called in the proxy
         }, request.getCurrentConfig())));
 
