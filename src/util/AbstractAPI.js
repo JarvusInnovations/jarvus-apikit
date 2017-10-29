@@ -17,10 +17,10 @@ Ext.define('Jarvus.util.AbstractAPI', {
 
     config: {
         /**
-         * @cfg {String/null}
+         * @cfg {String/true/null}
          * A host to prefix URLs with, or null to leave paths domain-relative
          */
-        host: null,
+        host: true,
 
         /**
          * @cfg {Boolean}
@@ -42,6 +42,27 @@ Ext.define('Jarvus.util.AbstractAPI', {
 
         // @inheritdoc
         disableCaching: false
+    },
+
+    constructor: function() {
+        var me = this,
+            pageParams,
+            urlMatch;
+
+        me.callParent(arguments);
+
+        if (me.getHost() === true) {
+            pageParams = Ext.Object.fromQueryString(location.search);
+
+            // allow API host to be overridden via apiHost param
+            if (pageParams.apiHost && (urlMatch = pageParams.apiHost.match(/(^([a-zA-Z]+):\/\/)?([^/]+).*/))) {
+                me.setHost(urlMatch[3]);
+                me.setUseSSL('apiSSL' in pageParams ? Boolean(pageParams.apiSSL) : urlMatch[2] == 'https');
+            } else {
+                me.setHost(null);
+                me.setUseSSL(location.protocol === 'https:');
+            }
+        }
     },
 
     //@private
