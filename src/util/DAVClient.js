@@ -75,22 +75,29 @@ Ext.define('Jarvus.util.DAVClient', {
         return this.getConnection().request(options);
     },
 
-    downloadFile: function(path, callback, scope) {
-        return this.request({
-            url: path,
+    downloadFile: function(url, callback, scope) {
+        var options = Ext.isString(url) ? { url: url } : url,
+            headers = options.headers || (options.headers = {});
+
+        if (options.revision) {
+            headers['X-Revision-ID'] = options.revision;
+        }
+
+        return this.request(Ext.applyIf({
             method: 'GET',
             callback: callback,
             scope: scope
-        });
+        }, options));
     },
 
-    uploadFile: function(path, content, callback, scope) {
-        return this.request({
-            url: path,
+    uploadFile: function(url, content, callback, scope) {
+        var options = Ext.isString(url) ? { url: url } : url;
+
+        return this.request(Ext.applyIf({
             method: 'PUT',
             rawData: content,
             callback: callback,
             scope: scope
-        });
+        }, options));
     }
 });
