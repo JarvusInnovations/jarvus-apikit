@@ -11,6 +11,10 @@
  */
 Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
+    requires: [
+        'Ext.Promise'
+    ],
+
 
     qualifiedUrlRe: /^(https?:)?\/\//,
     jsonMimeTypeRe: /^application\/([^;\s]+\+)?json(;.+)?$/,
@@ -102,9 +106,19 @@ Ext.define('Jarvus.util.AbstractAPI', {
      */
     request: function(options) {
         var me = this,
-            jsonMimeTypeRe = me.jsonMimeTypeRe;
+            jsonMimeTypeRe = me.jsonMimeTypeRe,
+            promise,
+            request;
 
-        return me.callParent([Ext.applyIf({
+        // build promise if no callbacks provided
+        if (!options.callback && !options.success && !options.failure) {
+            promise = new Ext.Promise(function (resolve, reject) {
+                options.success = resolve;
+                options.failure = reject;
+            });
+        }
+
+        request = me.callParent([Ext.applyIf({
             url: me.buildUrl(options.url),
             params: me.buildParams(options.params),
             headers: me.buildHeaders(options.headers),
@@ -197,6 +211,13 @@ Ext.define('Jarvus.util.AbstractAPI', {
             },
             scope: options.scope
         }, options)]);
+
+        if (promise) {
+            promise.request = request;
+            return promise;
+        }
+
+        return request;
     },
 
     // @deprecated
