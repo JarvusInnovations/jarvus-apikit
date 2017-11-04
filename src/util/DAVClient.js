@@ -82,5 +82,15 @@ Ext.define('Jarvus.util.DAVClient', {
             callback: callback,
             scope: scope
         });
+    },
+
+    uploadFile: function(path, content, callback, scope) {
+        return this.request({
+            url: path,
+            method: 'PUT',
+            rawData: content,
+            callback: callback,
+            scope: scope
+        });
     }
 });
