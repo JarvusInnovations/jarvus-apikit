@@ -90,11 +90,12 @@ Ext.define('Jarvus.util.DAVClient', {
             headers['X-Revision-ID'] = options.revision;
         }
 
+        if (!headers.Accept) {
+            headers.Accept = '*/*';
+        }
+
         return this.request(Ext.applyIf({
             method: 'GET',
-            headers: {
-                Accept: '*/*'
-            },
             callback: callback,
             scope: scope
         }, options));
