@@ -64,13 +64,18 @@ Ext.define('Jarvus.util.DAVClient', {
         return baseUri ? baseUri.replace(/\/*$/, '') : null;
     },
 
-    request: function(options) {
-        var url = options.url,
-            baseUri = this.getBaseUri();
+    buildUrl: function(url) {
+        var baseUri = this.getBaseUri();
 
-        if (url && baseUri) {
-            options.url = baseUri + '/' + url.replace(/^\/*/, '');
+        if (baseUri) {
+            url = baseUri + '/' + url.replace(/^\/*/, '');
         }
+
+        return url;
+    },
+
+    request: function(options) {
+        options.url = this.buildUrl(options.url);
 
         return this.getConnection().request(options);
     },
