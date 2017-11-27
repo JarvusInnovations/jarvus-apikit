@@ -80,6 +80,8 @@ Ext.define('Jarvus.util.DAVClient', {
         return this.getConnection().request(options);
     },
 
+
+    // DAV operations
     downloadFile: function(url, callback, scope) {
         var options = Ext.isString(url) ? { url: url } : url,
             headers = options.headers || (options.headers = {});
@@ -99,11 +101,49 @@ Ext.define('Jarvus.util.DAVClient', {
     },
 
     uploadFile: function(url, content, callback, scope) {
-        var options = Ext.isString(url) ? { url: url } : url;
+        var options = Ext.isString(url) ? { url: url } : url,
+            headers = options.headers || (options.headers = {});
+
+        if (options.ancestor) {
+            headers['X-Ancestor-ID'] = options.ancestor;
+        }
 
         return this.request(Ext.applyIf({
             method: 'PUT',
             rawData: content,
+            callback: callback,
+            scope: scope
+        }, options));
+    },
+
+    move: function(url, toUrl, callback, scope) {
+        var options = Ext.isString(url) ? { url: url } : url,
+            headers = options.headers || (options.headers = {});
+
+        headers.Destination = this.buildUrl(toUrl);
+
+        return this.request(Ext.applyIf({
+            method: 'MOVE',
+            callback: callback,
+            scope: scope
+        }, options));
+    },
+
+    delete: function(url, callback, scope) {
+        var options = Ext.isString(url) ? { url: url } : url;
+
+        return this.request(Ext.applyIf({
+            method: 'DELETE',
+            callback: callback,
+            scope: scope
+        }, options));
+    },
+
+    createCollection: function(url, callback, scope) {
+        var options = Ext.isString(url) ? { url: url } : url;
+
+        return this.request(Ext.applyIf({
+            method: 'MKCOL',
             callback: callback,
             scope: scope
         }, options));
