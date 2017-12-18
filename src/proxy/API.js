@@ -1,8 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-/**
- * TODO:
- * - Just extend Server and deprecated the other stuff Ajax does? callParent for buildrequest?
- */
 Ext.define('Jarvus.proxy.API', {
     extend: 'Ext.data.proxy.Server',
     alias: 'proxy.api',
