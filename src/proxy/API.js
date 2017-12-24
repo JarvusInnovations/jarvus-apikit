@@ -175,12 +175,11 @@ Ext.define('Jarvus.proxy.API', {
         return request;
     },
 
-    abortLastRequest: function(silent) {
+    abortLastRequest: function() {
         var lastRequest = this.lastRequest;
 
-        if(lastRequest) {
-            lastRequest.options.silenceException = !!silent;
-            Ext.Ajax.abort(lastRequest);
+        if (lastRequest) {
+            Ext.Ajax.abort(lastRequest.getRawRequest());
         }
     },
 
