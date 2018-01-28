@@ -1,8 +1,3 @@
-/*jslint browser: true, undef: true *//*global Ext*/
-/**
- * TODO:
- * - Just extend Server and deprecated the other stuff Ajax does? callParent for buildrequest?
- */
 Ext.define('Jarvus.proxy.API', {
     extend: 'Ext.data.proxy.Server',
     alias: 'proxy.api',
@@ -127,11 +122,17 @@ Ext.define('Jarvus.proxy.API', {
     buildRequest: function(operation) {
         var me = this,
             request = me.callParent(arguments),
+            url = request.getUrl(),
             params = request.getParams(),
             idParam = me.getIdParam();
 
         if (!idParam && idParam in params) {
             delete params[idParam];
+        }
+
+        if (Ext.isFunction(url)) {
+            url = url.call(this, operation);
+            request.setUrl(url);
         }
 
         request.setMethod(me.getMethod(request));
@@ -145,7 +146,7 @@ Ext.define('Jarvus.proxy.API', {
     doRequest: function(operation) {
         var me = this,
             writer = me.getWriter(),
-            request = me.buildRequest(operation);;
+            request = me.buildRequest(operation);
 
         if (writer && operation.allowWrite()) {
             request = writer.write(request);
@@ -166,7 +167,6 @@ Ext.define('Jarvus.proxy.API', {
         var me = this;
 
         request.setRawRequest(me.getConnection().request(Ext.applyIf({
-            autoDecode: false,
             failureStatusCodes: [404] // TODO: verify this results in the proper failure method being called in the proxy
         }, request.getCurrentConfig())));
 
@@ -175,12 +175,11 @@ Ext.define('Jarvus.proxy.API', {
         return request;
     },
 
-    abortLastRequest: function(silent) {
+    abortLastRequest: function() {
         var lastRequest = this.lastRequest;
 
-        if(lastRequest) {
-            lastRequest.options.silenceException = !!silent;
-            Ext.Ajax.abort(lastRequest);
+        if (lastRequest) {
+            Ext.Ajax.abort(lastRequest.getRawRequest());
         }
     },
 

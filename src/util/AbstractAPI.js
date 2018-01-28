@@ -11,16 +11,20 @@
  */
 Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
+    requires: [
+        'Ext.Promise'
+    ],
+
 
     qualifiedUrlRe: /^(https?:)?\/\//,
     jsonMimeTypeRe: /^application\/([^;\s]+\+)?json(;.+)?$/,
 
     config: {
         /**
-         * @cfg {String/null}
+         * @cfg {String/true/null}
          * A host to prefix URLs with, or null to leave paths domain-relative
          */
-        host: null,
+        host: true,
 
         /**
          * @cfg {Boolean}
@@ -42,6 +46,27 @@ Ext.define('Jarvus.util.AbstractAPI', {
 
         // @inheritdoc
         disableCaching: false
+    },
+
+    constructor: function() {
+        var me = this,
+            pageParams,
+            urlMatch;
+
+        me.callParent(arguments);
+
+        if (me.getHost() === true) {
+            pageParams = Ext.Object.fromQueryString(location.search);
+
+            // allow API host to be overridden via apiHost param
+            if (pageParams.apiHost && (urlMatch = pageParams.apiHost.match(/(^([a-zA-Z]+):\/\/)?([^/]+).*/))) {
+                me.setHost(urlMatch[3]);
+                me.setUseSSL('apiSSL' in pageParams ? Boolean(pageParams.apiSSL) : urlMatch[2] == 'https');
+            } else {
+                me.setHost(null);
+                me.setUseSSL(location.protocol === 'https:');
+            }
+        }
     },
 
     //@private
@@ -81,9 +106,19 @@ Ext.define('Jarvus.util.AbstractAPI', {
      */
     request: function(options) {
         var me = this,
-            jsonMimeTypeRe = me.jsonMimeTypeRe;
+            jsonMimeTypeRe = me.jsonMimeTypeRe,
+            promise,
+            request;
 
-        return me.callParent([Ext.applyIf({
+        // build promise if no callbacks provided
+        if (!options.callback && !options.success && !options.failure) {
+            promise = new Ext.Promise(function (resolve, reject) {
+                options.success = resolve;
+                options.failure = reject;
+            });
+        }
+
+        request = me.callParent([Ext.applyIf({
             url: me.buildUrl(options.url),
             params: me.buildParams(options.params),
             headers: me.buildHeaders(options.headers),
@@ -144,6 +179,13 @@ Ext.define('Jarvus.util.AbstractAPI', {
             },
             scope: options.scope
         }, options)]);
+
+        if (promise) {
+            promise.request = request;
+            return promise;
+        }
+
+        return request;
     },
 
     // @deprecated
