@@ -179,6 +179,11 @@ Ext.define('Jarvus.proxy.API', {
         return request;
     },
 
+    extractResponseData: function(response) {
+        // make use of already-parsed data if available
+        return response.data || response;
+    },
+
     abortLastRequest: function() {
         var lastRequest = this.lastRequest;
 
