@@ -1,5 +1,3 @@
-/*jslint browser: true, undef: true*//*global Ext*/
-
 /**
  * @abstract
  * An abstract class for singletons that facilitates communication with backend services
@@ -12,7 +10,10 @@
 Ext.define('Jarvus.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
     requires: [
-        'Ext.Promise'
+        'Ext.Promise',
+
+        /* global Jarvus */
+        'Jarvus.view.LoginWindow'
     ],
 
 
@@ -20,6 +21,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
     jsonMimeTypeRe: /^application\/([^;\s]+\+)?json(;.+)?$/,
 
     config: {
+
         /**
          * @cfg {String/true/null}
          * A host to prefix URLs with, or null to leave paths domain-relative
@@ -69,7 +71,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
         }
     },
 
-    //@private
+    // @private
     buildUrl: function(path) {
         var me = this,
             host = me.getHost(),
@@ -90,12 +92,12 @@ Ext.define('Jarvus.util.AbstractAPI', {
         return path;
     },
 
-    //@private
+    // @private
     buildHeaders: function(headers) {
         return headers;
     },
 
-    //@private
+    // @private
     buildParams: function(params) {
         return params || null;
     },
@@ -129,7 +131,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     response.data = Ext.decode(response.responseText, true);
                 }
 
-                //Calling the callback function sending the decoded data
+                // Calling the callback function sending the decoded data
                 Ext.callback(options.success, options.scope, [response]);
 
             },
@@ -142,63 +144,12 @@ Ext.define('Jarvus.util.AbstractAPI', {
                 if (response.aborted === true) {
                     Ext.callback(options.abort, options.scope, [response]);
                 } else if (response.status == 401 || response.statusText.indexOf('Unauthorized') !== -1) {
-
-                    /*
-                    We seem to always get the same session id, so we can't automatically try again once the user logs in
-                    var oldSessionID = Ext.util.Cookies.get('s');
-                     */
-
-                    Ext.override(Ext.Msg, {
-                        hide: function () {
-                            var me = this,
-                                hideManually = me.cfg ? me.cfg.hideManually : false;
-
-                            if (!hideManually) {
-                                me.callParent(arguments);
-                            }
-                        }
+                    Jarvus.view.LoginWindow.show({
+                        loginUrl: me.buildUrl('/login'),
+                        connection: me,
+                        requestOptions: options
                     });
-
-                    var msg = Ext.Msg.show({
-                        hideManually: true,
-                        title: 'Login Required',
-                        msg: "You've either logged out or your has session expired. Please login and try again.",
-                        buttonText: {
-                            'yes': 'Login',
-                            'no': 'Try Again',
-                            'cancel': 'Cancel'
-                        },
-                        scope: msg,
-                        fn: function (btn) {
-                            if (btn === 'yes') {
-                                // login
-                                var loginWindow = window.open(me.buildUrl('/login'), 'emergence-login');
-                                loginWindow.focus();
-                                return;
-                            } else if (btn === 'no') {
-                                // try again
-                                me.request(options);
-                            }
-
-                            msg.cfg.hideManually = false;
-                            msg.hide();
-                        }
-                    });
-
-                    /*
-                    if (oldSessionID !== null) {
-                        var cookieCheckInterval = window.setInterval(function() {
-                            console.log(oldSessionID);
-                            console.warn(Ext.util.Cookies.get('s'));
-                            if (Ext.util.Cookies.get('s') != oldSessionID) {
-                                alert('new login');
-                                debugger;
-                                window.clearInterval(cookieCheckInterval);
-                            }
-                        }, 100);
-                    }
-                    */
-                } else if(response.status == 0) {
+                } else if (response.status == 0) {
                     Ext.Msg.confirm('An error occurred', 'There was an error trying to reach the server. Do you want to try again?', function (btn) {
                         if (btn === 'yes') {
                             me.request(options);

@@ -7,6 +7,7 @@ Ext.define('Jarvus.proxy.API', {
     ],
 
     config: {
+
         /**
          * @cfg The {Ext.data.Connection} instance that will process requests
          * @required
@@ -80,6 +81,9 @@ Ext.define('Jarvus.proxy.API', {
                 return 'PATCH';
             case 'destroy':
                 return 'DELETE';
+            default:
+                Ext.Logger.error('Unhandled request action');
+                return null;
         }
     },
 
