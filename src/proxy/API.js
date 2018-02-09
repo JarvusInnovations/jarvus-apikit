@@ -87,6 +87,10 @@ Ext.define('Jarvus.proxy.API', {
         }
     },
 
+    getUrlParams: function(request) {
+        return null;
+    },
+
     getParams: function(operation) {
         var me = this,
             params = me.callParent(arguments);
@@ -139,6 +143,7 @@ Ext.define('Jarvus.proxy.API', {
             request.setUrl(url);
         }
 
+        request.setUrlParams(me.getUrlParams(request));
         request.setMethod(me.getMethod(request));
         request.setHeaders(me.getHeaders(request));
         request.setTimeout(me.getTimeout(request));
