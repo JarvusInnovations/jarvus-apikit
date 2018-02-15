@@ -7,6 +7,7 @@ Ext.define('Jarvus.proxy.API', {
     ],
 
     config: {
+
         /**
          * @cfg The {Ext.data.Connection} instance that will process requests
          * @required
@@ -80,7 +81,14 @@ Ext.define('Jarvus.proxy.API', {
                 return 'PATCH';
             case 'destroy':
                 return 'DELETE';
+            default:
+                Ext.Logger.error('Unhandled request action');
+                return null;
         }
+    },
+
+    getUrlParams: function(request) {
+        return {};
     },
 
     getParams: function(operation) {
@@ -124,7 +132,7 @@ Ext.define('Jarvus.proxy.API', {
             request = me.callParent(arguments),
             url = request.getUrl(),
             params = request.getParams(),
-            idParam = me.getIdParam();
+            idParam = me.getIdParam(request);
 
         if (!idParam && idParam in params) {
             delete params[idParam];
@@ -135,10 +143,11 @@ Ext.define('Jarvus.proxy.API', {
             request.setUrl(url);
         }
 
+        request.setUrlParams(me.getUrlParams(request));
         request.setMethod(me.getMethod(request));
         request.setHeaders(me.getHeaders(request));
         request.setTimeout(me.getTimeout(request));
-        request.setWithCredentials(me.getWithCredentials());
+        request.setWithCredentials(me.getWithCredentials(request));
 
         return request;
     },
@@ -173,6 +182,11 @@ Ext.define('Jarvus.proxy.API', {
         me.lastRequest = request;
 
         return request;
+    },
+
+    extractResponseData: function(response) {
+        // make use of already-parsed data if available
+        return response.data || response;
     },
 
     abortLastRequest: function() {
