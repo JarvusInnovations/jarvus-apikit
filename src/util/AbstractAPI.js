@@ -62,7 +62,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
             if (pageParams.apiHost && (urlMatch = pageParams.apiHost.match(/(^([a-zA-Z]+):\/\/)?([^/]+).*/))) {
                 me.setHost(urlMatch[3]);
                 me.setUseSSL('apiSSL' in pageParams ? Boolean(pageParams.apiSSL) : urlMatch[2] == 'https');
-            } else {
+            } else if (!me.getUseSSL()) {
                 me.setHost(null);
                 me.setUseSSL(location.protocol === 'https:');
             }
@@ -161,7 +161,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
                         }, 100);
                     }
                     */
-                    
+
                     Ext.callback(options.unauthenticated, options.scope, [response]);
 
                 } else if(response.status === 0) {
