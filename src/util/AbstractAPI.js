@@ -144,6 +144,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
                 if (response.aborted === true) {
                     Ext.callback(options.abort, options.scope, [response]);
                 } else if (response.status == 401 || response.statusText.indexOf('Unauthorized') !== -1) {
+
                     Jarvus.view.LoginWindow.show({
                         loginUrl: me.buildUrl('/login'),
                         connection: me,
@@ -153,6 +154,8 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     Ext.Msg.confirm('An error occurred', 'There was an error trying to reach the server. Do you want to try again?', function (btn) {
                         if (btn === 'yes') {
                             me.request(options);
+                        } else {
+                            Ext.callback(options.failure, options.scope, [response]);
                         }
                     });
                 } else {
