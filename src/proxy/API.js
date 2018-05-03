@@ -1,9 +1,9 @@
-Ext.define('Jarvus.proxy.API', {
+Ext.define('Jarvus.apikit.proxy.API', {
     extend: 'Ext.data.proxy.Server',
     alias: 'proxy.api',
     requires: [
-        'Jarvus.util.API',
-        'Jarvus.writer.API'
+        'Jarvus.apikit.util.API',
+        'Jarvus.apikit.writer.API'
     ],
 
     config: {
@@ -12,7 +12,7 @@ Ext.define('Jarvus.proxy.API', {
          * @cfg The {Ext.data.Connection} instance that will process requests
          * @required
          */
-        connection: 'Jarvus.util.API',
+        connection: 'Jarvus.apikit.util.API',
 
         /**
          * @cfg Whether simple remote filters should be written to params

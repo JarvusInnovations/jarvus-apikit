@@ -1,4 +1,4 @@
-Ext.define('Jarvus.writer.API', {
+Ext.define('Jarvus.apikit.writer.API', {
     extend: 'Ext.data.writer.Json',
     alias: 'writer.api',
 

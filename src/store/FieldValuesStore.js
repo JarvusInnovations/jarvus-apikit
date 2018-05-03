@@ -1,4 +1,4 @@
-Ext.define('Jarvus.store.FieldValuesStore', {
+Ext.define('Jarvus.apikit.store.FieldValuesStore', {
     extend: 'Ext.data.Store',
     alias: 'store.fieldvalues',
 
