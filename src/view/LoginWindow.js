@@ -1,4 +1,4 @@
-Ext.define('Jarvus.view.LoginWindow', {
+Ext.define('Jarvus.apikit.view.LoginWindow', {
     extend: 'Ext.window.Window',
     singleton: true,
 

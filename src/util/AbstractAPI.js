@@ -7,13 +7,13 @@
  * - does the touch version use Ext.Ajax or parent.request?
  * - pass through request options like touch version does
  */
-Ext.define('Jarvus.util.AbstractAPI', {
+Ext.define('Jarvus.apikit.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
     requires: [
         'Ext.Promise',
 
         /* global Jarvus */
-        'Jarvus.view.LoginWindow'
+        'Jarvus.apikit.view.LoginWindow'
     ],
 
 
@@ -145,7 +145,7 @@ Ext.define('Jarvus.util.AbstractAPI', {
                     Ext.callback(options.abort, options.scope, [response]);
                 } else if (response.status == 401 || response.statusText.indexOf('Unauthorized') !== -1) {
 
-                    Jarvus.view.LoginWindow.show({
+                    Jarvus.apikit.view.LoginWindow.show({
                         loginUrl: me.buildUrl('/login'),
                         connection: me,
                         requestOptions: options

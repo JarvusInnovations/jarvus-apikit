@@ -1,6 +1,6 @@
-Ext.define('Jarvus.util.DAVClient', {
+Ext.define('Jarvus.apikit.util.DAVClient', {
     requires: [
-        'Jarvus.util.API'
+        'Jarvus.apikit.util.API'
     ],
     mixins: [
         'Ext.mixin.Observable'
@@ -12,7 +12,7 @@ Ext.define('Jarvus.util.DAVClient', {
          * @cfg The {Ext.data.Connection} instance that will process requests
          * @required
          */
-        connection: 'Jarvus.util.API',
+        connection: 'Jarvus.apikit.util.API',
 
         /**
          * @cfg Optional base URI to prepend DAV paths with
