@@ -7,7 +7,7 @@
  * - does the touch version use Ext.Ajax or parent.request?
  * - pass through request options like touch version does
  */
-Ext.define('Jarvus.util.AbstractAPI', {
+Ext.define('Jarvus.apikit.util.AbstractAPI', {
     extend: 'Ext.data.Connection',
     requires: [
         'Ext.Promise',
