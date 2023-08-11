@@ -4,7 +4,7 @@ Ext.define('Jarvus.view.LoginWindow', {
 
 
     title: 'Login Required',
-    html: 'You\'ve either logged out or your has session expired. Please login and try again.',
+    html: 'You\'ve either logged out or your session has expired. Please login and try again.',
     bodyPadding: 18,
     closable: false,
     buttons: [
